@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Крестики-нолики</title>
+  <style>
+    .board {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      grid-gap: 5px;
+    }
+    button {
+      font-size: 24px;
+      padding: 10px;
+    }
+  </style>
+</head>
+<body>
+  <h1>Крестики-нолики</h1>
+
+  <div class="board" id="board">
+    <button onclick="playerMove(0, 0)"></button>
+    <button onclick="playerMove(0, 1)"></button>
+    <button onclick="playerMove(0, 2)"></button>
+    <button onclick="playerMove(1, 0)"></button>
+    <button onclick="playerMove(1, 1)"></button>
+    <button onclick="playerMove(1, 2)"></button>
+    <button onclick="playerMove(2, 0)"></button>
+    <button onclick="playerMove(2, 1)"></button>
+    <button onclick="playerMove(2, 2)"></button>
+  </div>
+
+  <p id="result"></p>
+
+  <script>
+    const board = document.getElementById('board');
+    const buttons = board.getElementsByTagName('button');
+    const result = document.getElementById('result');
+
+    let currentPlayer = 'X';
+    let isGameOver = false;
+
+    function playerMove(row, col) {
+      if (buttons[row * 3 + col].innerHTML === "" && !isGameOver) {
+        buttons[row * 3 + col].innerHTML = currentPlayer;
+        checkWin();
+
+        if (!isGameOver) {
+          computerMove();
+          checkWin();
+        }
+      }
+    }
+
+    function computerMove() {
+      do {
+        var randomIndex = Math.floor(Math.random() * 9);
+      } while (buttons[randomIndex].innerHTML !== "");
+
+      buttons[randomIndex].innerHTML = "O";
+    }
+
+    function checkWin() {
+      const lines = [
+        [0, 1, 2],
+        [3, 4, 5],
+        [6, 7, 8],
+        [0, 3, 6],
+        [1, 4, 7],
+        [2, 5, 8],
+        [0, 4, 8],
+        [2, 4, 6]
+      ];
+
+      for (let line of lines) {
+        const [a, b, c] = line;
+        if (buttons[a].innerHTML !== "" && buttons[a].innerHTML === buttons[b].innerHTML && buttons[a].innerHTML === buttons[c].innerHTML) {
+          result.innerHTML = `${currentPlayer} выиграл!`;
+          isGameOver = true;
+          return;
+        }
+      }
+
+      if (Array.from(buttons).every(button => button.innerHTML !== "")) {
+        result.innerHTML = "Ничья!";
+        isGameOver = true;
+      }
+
+      currentPlayer = (currentPlayer === 'X') ? 'O' : 'X';
+    }
+  </script>
+</body>
+</html>
